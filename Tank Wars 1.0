@@ -1,0 +1,397 @@
+import turtle
+
+#Base game settings
+turtle.fd(0)
+turtle.speed(0)
+turtle.bgcolor("white")
+turtle.ht()
+turtle.setundobuffer(1)
+turtle.tracer(1)
+turtle.setup(900,900)
+
+#Class to set up all sprites used in the game
+class Sprite(turtle.Turtle):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        turtle.Turtle.__init__(self, shape = spriteshape)
+        self.speed(0)
+        self.penup()
+        self.color(color)
+        self.fd(0)
+        self.goto(startx, starty)
+        self.setheading(heading)
+        self.speed = 1
+
+    def move(self):
+        self.fd(self.speed)
+
+#Collision detection (Wall, Boundry, Boundries, Divider, Collision)
+        #Main Wall
+        if self.xcor() > 290:
+            self.setx(290)
+            self.rt(60)
+        if self.xcor() < -290:
+            self.setx(-290)
+            self.rt(60)
+        if self.ycor() > 290:
+            self.sety(290)
+            self.rt(60)
+        if self.ycor() < -290:
+            self.sety(-290)
+            self.rt(60)
+        #Middle Divider
+        if self.xcor() < 25 and self.ycor() < 150 and \
+            self.xcor() > -25 and self.ycor() > -150:
+            self.rt(60)
+        #Top Left Divider
+        if self.xcor() < -150 and self.ycor() < 200 and \
+            self.xcor() > -200 and self.ycor() > 50:
+            self.rt(60)
+        #Bottom Left Divider
+        if self.xcor() < -150 and self.ycor() < -50 and \
+            self.xcor() > -200 and self.ycor() > -200:
+            self.rt(60)
+        #Top Right Divider
+        if self.xcor() < 200 and self.ycor() < 200 and \
+            self.xcor() > 150 and self.ycor() > 50:
+            self.lt(60)
+        #Bottom Right Divider
+        if self.xcor() < 200 and self.ycor() < -50 and \
+            self.xcor() > 150 and self.ycor() > -200:
+            self.rt(60)
+
+        #Tank colliding with tank
+    def collide(self, other):
+        if (self.xcor() >= (other.xcor() - 10)) and \
+        (self.xcor() <= (other.xcor() + 10)) and \
+        (self.ycor() <= (other.ycor() + 10)) and \
+        (self.ycor() >= (other.ycor() - 10)):
+            return True
+        else:
+            return False
+#Tank class and controls (Turning, Controls, Bluetank, Redtank, Setup)
+#Bluetank class and setup
+class Bluetank(Sprite):
+     def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.speed = 0
+        self.lives = 3
+
+     def turnblue_left(self):
+        self.lt(30)
+
+     def turnblue_right(self):
+        self.rt(30)
+
+     def bluespeed(self):
+         self.speed += 1
+       
+     def blueslow(self):
+         self.speed -= 1
+
+     def bluereset(self):
+         self.goto(200,0)
+
+#Redtank class and setup
+class Redtank(Sprite):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.speed = 0
+        self.lives = 3
+
+    def turnred_left(self):
+        self.lt(30)
+
+    def turnred_right(self):
+        self.rt(30)
+
+    def redspeed(self):
+         self.speed += 1
+       
+    def redslow(self):
+         self.speed -= 1
+
+    def redreset(self):
+        self.goto(-200,0)
+
+#Missle Classes and setup
+#BlueMissile setup
+class BlueMissile(Sprite):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.shapesize(stretch_wid = 0.3, stretch_len = 0.4, outline = None)
+        self.speed = 15
+        self.status = "ready"
+        self.goto(-1000, 1000)
+
+    def bluefire(self):
+        if self.status == "ready":
+            self.goto(bluetank.xcor(), bluetank.ycor())
+            self.setheading(bluetank.heading())
+            self.status = "firing"
+
+    def move (self):
+        if self.status == "ready":
+            self.goto(-1000,1000)
+        if self.status == "firing":
+            self.fd(self.speed)
+
+    #Boarder Check
+        if self.xcor() < -290 or self.xcor() > 290 or \
+        self.ycor() < -290 or self.ycor() > 290:
+            self.goto(-1000,1000)
+            self.status = "ready"
+    #Divider Checks
+        #Middle Divider
+        if self.xcor() < 25 and self.ycor() < 150 and \
+            self.xcor() > -25 and self.ycor() > -150:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Top Left Divider
+        if self.xcor() < -150 and self.ycor() < 200 and \
+            self.xcor() > -200 and self.ycor() > 50:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Bottom Left Divider
+        if self.xcor() < -150 and self.ycor() < -50 and \
+            self.xcor() > -200 and self.ycor() > -200:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Top Right Divider
+        if self.xcor() < 200 and self.ycor() < 200 and \
+            self.xcor() > 150 and self.ycor() > 50:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Bottom Right Divider
+        if self.xcor() < 200 and self.ycor() < -50 and \
+            self.xcor() > 150 and self.ycor() > -200:
+            self.goto(-1000,1000)
+            self.status = "ready"
+
+#RedMissle setup
+class RedMissile(Sprite):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.shapesize(stretch_wid = 0.3, stretch_len = 0.4, outline = None)
+        self.speed = 15
+        self.status = "ready"
+        self.goto(-1000, 1000)
+
+    def redfire(self):
+        if self.status == "ready":
+            self.goto(redtank.xcor(), redtank.ycor())
+            self.setheading(redtank.heading())
+            self.status = "firing"
+
+    def move (self):
+        if self.status == "ready":
+            self.goto(-1000,1000)
+        if self.status == "firing":
+            self.fd(self.speed)
+
+    #Boarder Check
+        if self.xcor() < -290 or self.xcor() > 290 or \
+        self.ycor() < -290 or self.ycor() > 290:
+            self.goto(-1000,1000)
+            self.status = "ready"
+     #Divider Check
+        #Middle Divider
+        if self.xcor() < 25 and self.ycor() < 150 and \
+            self.xcor() > -25 and self.ycor() > -150:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Top Left Divider
+        if self.xcor() < -150 and self.ycor() < 200 and \
+            self.xcor() > -200 and self.ycor() > 50:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Bottom Left Divider
+        if self.xcor() < -150 and self.ycor() < -50 and \
+            self.xcor() > -200 and self.ycor() > -200:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Top Right Divider
+        if self.xcor() < 200 and self.ycor() < 200 and \
+            self.xcor() > 150 and self.ycor() > 50:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Bottom Right Divider
+        if self.xcor() < 200 and self.ycor() < -50 and \
+            self.xcor() > 150 and self.ycor() > -200:
+            self.goto(-1000,1000)
+            self.status = "ready"
+       
+
+#Class for graphics (draw boarder, draw wall)
+class Game():
+    def __init__(self):
+        self.state = "playing"
+        self.pen = turtle.Turtle()
+       
+    def draw_boarder(self):
+        self.pen.speed(0)
+        self.pen.color("black")
+        self.pen.pensize(3)
+        self.pen.penup()
+        self.pen.goto(-300,300)
+        self.pen.pendown()
+        #Main Wall
+        for side in range(4):
+            self.pen.fd(600)
+            self.pen.rt(90)
+        self.pen.penup()
+        self.pen.ht()
+        #Top Left Divider
+        self.pen.goto(-200,200)
+        self.pen.pendown()
+        for TLD in range(2):
+            self.pen.fd(50)
+            self.pen.rt(90)
+            self.pen.fd(150)
+            self.pen.rt(90)
+        self.pen.penup()
+        self.pen.ht()
+        #Bottom Left Divider
+        self.pen.goto(-200,-200)
+        self.pen.pendown()
+        for BLD in range(2):
+            self.pen.fd(50)
+            print(self.pen.pos())
+            self.pen.lt(90)
+            self.pen.fd(150)
+            print(self.pen.pos())
+            self.pen.lt(90)
+        self.pen.penup()
+        self.pen.ht()
+        #Top Right Divider
+        self.pen.goto(150,200)
+        self.pen.pendown()
+        for TRD in range(2):
+            self.pen.fd(50)
+            print(self.pen.pos())
+            self.pen.rt(90)
+            self.pen.fd(150)
+            print(self.pen.pos())
+            self.pen.rt(90)
+        self.pen.penup()
+        self.pen.ht()
+        #Bottom Right Divider
+        self.pen.goto(150,-200)
+        self.pen.pendown()
+        for BRD in range(2):
+            self.pen.fd(50)
+            print(self.pen.pos())
+            self.pen.lt(90)
+            self.pen.fd(150)
+            self.pen.lt(90)
+            print(self.pen.pos())
+        self.pen.penup()
+        self.pen.ht()
+        #Middle Divider
+        self.pen.goto(-25,150)
+        self.pen.pendown()
+        for BRD in range(2):
+            self.pen.fd(50)
+            self.pen.rt(90)
+            self.pen.fd(300)
+            self.pen.rt(90)
+        self.pen.penup()
+        self.pen.ht()
+
+#Class for the blue side of the scoreboard
+class BlueControl():
+    def __init__(self):
+        self.bluescore = 0
+        self.bluepen = turtle.Turtle()
+        self.state = "playing"
+
+        self.bluepen.color("black")
+        self.bluepen.hideturtle()
+        self.bluepen.pensize(3)
+        self.bluepen.penup()
+
+    def show_bluestatus(self):
+        self.bluepen.undo()
+        msg = "%s - Blue Team Score" %(self.bluescore)
+        self.bluepen.penup()
+        self.bluepen.goto(110,310)
+        self.bluepen.write(msg, font=("Arial", 16, "normal"))
+
+#Class for the red side of the scoreboard
+class Redcontrol():
+     def __init__(self):
+        self.redscore = 0
+        self.redpen = turtle.Turtle()
+        self.state = "playing"
+
+        self.redpen.color("black")
+        self.redpen.hideturtle()
+        self.redpen.pensize(3)
+        self.redpen.penup()
+
+     def show_redstatus(self):
+        self.redpen.undo()
+        msg = "Red Team Score - %s" %(self.redscore)
+        self.redpen.penup()
+        self.redpen.goto(-300,310)
+        self.redpen.write(msg, font=("Arial", 16, "normal"))
+       
+#Make classes into objects
+game = Game()
+blueboard = BlueControl()
+redboard = Redcontrol()
+#Draw the games border
+game.draw_boarder()
+blueboard.show_bluestatus()
+redboard.show_redstatus()
+
+
+#Create all Sprites
+bluetank = Bluetank("classic", "blue" ,200, 0, 180)
+redtank = Redtank("classic", "red",-200, 0, 0)
+bluemissile = BlueMissile("arrow", "blue",0 , 0, 0)
+redmissile = RedMissile("arrow", "red",0 ,0 ,0)
+
+#Controls
+#Bluetank
+turtle.onkey(bluetank.turnblue_left, 'Left')
+turtle.onkey(bluetank.turnblue_right, 'Right')
+turtle.onkey(bluetank.bluespeed, 'Up')
+turtle.onkey(bluetank.blueslow, 'Down')
+turtle.onkey(bluemissile.bluefire, '0')
+turtle.onkey(bluetank.bluereset, 'u')
+#Redtank
+turtle.onkey(redtank.turnred_left, 'a')
+turtle.onkey(redtank.turnred_right, 'd')
+turtle.onkey(redtank.redspeed, 'w')
+turtle.onkey(redtank.redslow, 's')
+turtle.onkey(redmissile.redfire, 'space')
+turtle.onkey(redtank.redreset, 'y')
+turtle.listen()
+
+#Main game loop
+while True:
+    bluetank.move()
+    bluemissile.move()
+    redtank.move()
+    redmissile.move()
+   
+
+     #Check for collisions between tanks
+    if bluetank.collide(redtank):
+        redtank.goto(-200,0)
+        bluetank.goto(200,0)
+
+     #Check for hit
+    if bluemissile.collide(redtank):
+        redtank.goto(-200,0)
+        bluemissile.status = "ready"
+        #Increase Score
+        blueboard.bluescore +=1
+        blueboard.show_bluestatus()
+
+    if redmissile.collide(bluetank):
+        bluetank.goto(200,0)
+        redmissile.status = "ready"
+        #Increase Score
+        redboard.redscore += 1
+        redboard.show_redstatus()
