@@ -1,4 +1,6 @@
 import turtle
+import random
+import time
 
 #Base game settings
 turtle.fd(0)
@@ -68,6 +70,7 @@ class Sprite(turtle.Turtle):
             return True
         else:
             return False
+
 #Tank class and controls (Turning, Controls, Bluetank, Redtank, Setup)
 #Bluetank class and setup
 class Bluetank(Sprite):
@@ -91,6 +94,9 @@ class Bluetank(Sprite):
      def bluereset(self):
          self.goto(200,0)
 
+     def blueaim(self):
+         self.setheading(self.towards(redtank))
+
 #Redtank class and setup
 class Redtank(Sprite):
     def __init__(self, spriteshape, color, startx, starty, heading):
@@ -112,6 +118,9 @@ class Redtank(Sprite):
 
     def redreset(self):
         self.goto(-200,0)
+
+    def redaim(self):
+         self.setheading(self.towards(bluetank))
 
 #Missle Classes and setup
 #BlueMissile setup
@@ -220,12 +229,12 @@ class RedMissile(Sprite):
             self.goto(-1000,1000)
             self.status = "ready"
        
-
 #Class for graphics (draw boarder, draw wall)
 class Game():
     def __init__(self):
         self.state = "playing"
         self.pen = turtle.Turtle()
+        self.pen.hideturtle()
        
     def draw_boarder(self):
         self.pen.speed(0)
@@ -243,57 +252,66 @@ class Game():
         #Top Left Divider
         self.pen.goto(-200,200)
         self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
         for TLD in range(2):
             self.pen.fd(50)
             self.pen.rt(90)
             self.pen.fd(150)
             self.pen.rt(90)
+        self.pen.end_fill()
         self.pen.penup()
         self.pen.ht()
         #Bottom Left Divider
         self.pen.goto(-200,-200)
         self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
         for BLD in range(2):
             self.pen.fd(50)
-            print(self.pen.pos())
             self.pen.lt(90)
             self.pen.fd(150)
-            print(self.pen.pos())
             self.pen.lt(90)
+        self.pen.end_fill()
         self.pen.penup()
         self.pen.ht()
         #Top Right Divider
         self.pen.goto(150,200)
         self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
         for TRD in range(2):
             self.pen.fd(50)
-            print(self.pen.pos())
             self.pen.rt(90)
             self.pen.fd(150)
-            print(self.pen.pos())
             self.pen.rt(90)
+        self.pen.end_fill()
         self.pen.penup()
         self.pen.ht()
         #Bottom Right Divider
         self.pen.goto(150,-200)
         self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
         for BRD in range(2):
             self.pen.fd(50)
-            print(self.pen.pos())
             self.pen.lt(90)
             self.pen.fd(150)
             self.pen.lt(90)
-            print(self.pen.pos())
+        self.pen.end_fill()
         self.pen.penup()
         self.pen.ht()
         #Middle Divider
         self.pen.goto(-25,150)
         self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
         for BRD in range(2):
             self.pen.fd(50)
             self.pen.rt(90)
             self.pen.fd(300)
             self.pen.rt(90)
+        self.pen.end_fill()
         self.pen.penup()
         self.pen.ht()
 
@@ -307,6 +325,36 @@ class BlueControl():
         self.bluepen.color("black")
         self.bluepen.hideturtle()
         self.bluepen.pensize(3)
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,425)
+        msg = "Blue Team Controls"
+        self.bluepen.pendown()
+        self.bluepen.write(msg, align = "right", font=("Arial", 16, "normal",))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300, 400)
+        self.bluepen.pendown()
+        msg = "Move = Arrow Keys"
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,375)
+        self.bluepen.pendown()
+        msg = "Fire = 0 or /"
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,350)
+        self.bluepen.pendown()
+        msg = "Reset = U"
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,330)
+        self.bluepen.pendown()
+        msg = "Aim = ."
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
         self.bluepen.penup()
 
     def show_bluestatus(self):
@@ -328,13 +376,43 @@ class Redcontrol():
         self.redpen.pensize(3)
         self.redpen.penup()
 
+        self.redpen.goto(-300,425)
+        msg = "Red Team Controls"
+        self.redpen.pendown()
+        self.redpen.write(msg, font=("Arial", 16, "normal"))
+        self.redpen.penup()
+
+        self.redpen.goto(-300, 400)
+        self.redpen.pendown()
+        msg = "Move = W,A,S,D"
+        self.redpen.write(msg, font=("Arial", 16, "normal"))
+        self.redpen.penup()
+
+        self.redpen.goto(-300,375)
+        self.redpen.pendown()
+        msg = "Fire = Space"
+        self.redpen.write(msg, font=("Arial", 16, "normal"))
+        self.redpen.penup()
+
+        self.redpen.goto(-300,350)
+        self.redpen.pendown()
+        msg = "Reset = Y"
+        self.redpen.write(msg, font=("Arial", 16, "normal"))
+        self.redpen.penup()
+
+        self.redpen.goto(-300,330)
+        self.redpen.pendown()
+        msg = "Aim = R"
+        self.redpen.write(msg, font=("Arial", 16, "normal"))
+        self.redpen.penup()
+
      def show_redstatus(self):
         self.redpen.undo()
         msg = "Red Team Score - %s" %(self.redscore)
         self.redpen.penup()
         self.redpen.goto(-300,310)
         self.redpen.write(msg, font=("Arial", 16, "normal"))
-       
+    
 #Make classes into objects
 game = Game()
 blueboard = BlueControl()
@@ -346,10 +424,13 @@ redboard.show_redstatus()
 
 
 #Create all Sprites
+#Tanks
 bluetank = Bluetank("classic", "blue" ,200, 0, 180)
 redtank = Redtank("classic", "red",-200, 0, 0)
+#Missiles
 bluemissile = BlueMissile("arrow", "blue",0 , 0, 0)
 redmissile = RedMissile("arrow", "red",0 ,0 ,0)
+
 
 #Controls
 #Bluetank
@@ -358,7 +439,9 @@ turtle.onkey(bluetank.turnblue_right, 'Right')
 turtle.onkey(bluetank.bluespeed, 'Up')
 turtle.onkey(bluetank.blueslow, 'Down')
 turtle.onkey(bluemissile.bluefire, '0')
+turtle.onkey(bluemissile.bluefire, '/')
 turtle.onkey(bluetank.bluereset, 'u')
+turtle.onkey(bluetank.blueaim, '.')
 #Redtank
 turtle.onkey(redtank.turnred_left, 'a')
 turtle.onkey(redtank.turnred_right, 'd')
@@ -366,6 +449,7 @@ turtle.onkey(redtank.redspeed, 'w')
 turtle.onkey(redtank.redslow, 's')
 turtle.onkey(redmissile.redfire, 'space')
 turtle.onkey(redtank.redreset, 'y')
+turtle.onkey(redtank.redaim, 'r')
 turtle.listen()
 
 #Main game loop
@@ -374,6 +458,7 @@ while True:
     bluemissile.move()
     redtank.move()
     redmissile.move()
+
    
 
      #Check for collisions between tanks
@@ -388,6 +473,8 @@ while True:
         #Increase Score
         blueboard.bluescore +=1
         blueboard.show_bluestatus()
+        #
+            
 
     if redmissile.collide(bluetank):
         bluetank.goto(200,0)
@@ -395,3 +482,6 @@ while True:
         #Increase Score
         redboard.redscore += 1
         redboard.show_redstatus()
+
+    for particle in particles:
+        particle.move()
