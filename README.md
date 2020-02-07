@@ -2,8 +2,8 @@
 
 How to make everything run
 
-1. Create two files in Visual Studio
-  a. one should be named BattleTanksVersus
+1. Create two files in Visual Studio <br>
+  a. one should be named BattleTanksVersus <br>
   b. one should be name BattleTankMenu
 2. Copy the code from Github into the relevent program
 3. After saving the BattleTanksVersus program copy and paste it into the same folder as the BattleTankMenu program
