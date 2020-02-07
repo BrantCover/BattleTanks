@@ -422,7 +422,6 @@ game.draw_boarder()
 blueboard.show_bluestatus()
 redboard.show_redstatus()
 
-
 #Create all Sprites
 #Tanks
 bluetank = Bluetank("classic", "blue" ,200, 0, 180)
@@ -459,8 +458,6 @@ while True:
     redtank.move()
     redmissile.move()
 
-   
-
      #Check for collisions between tanks
     if bluetank.collide(redtank):
         redtank.goto(-200,0)
@@ -473,9 +470,7 @@ while True:
         #Increase Score
         blueboard.bluescore +=1
         blueboard.show_bluestatus()
-        #
             
-
     if redmissile.collide(bluetank):
         bluetank.goto(200,0)
         redmissile.status = "ready"
