@@ -1,0 +1,425 @@
+import turtle
+import random
+import time
+
+#Base game settings
+turtle.fd(0)
+turtle.speed(0)
+turtle.bgcolor("white")
+turtle.ht()
+turtle.setundobuffer(1)
+turtle.tracer(0)
+turtle.setup(900,900)
+
+#Class to set up all sprites used in the game
+class Sprite(turtle.Turtle):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        turtle.Turtle.__init__(self, shape = spriteshape)
+        self.speed(0)
+        self.penup()
+        self.color(color)
+        self.fd(0)
+        self.goto(startx, starty)
+        self.setheading(heading)
+        self.speed = 1
+
+    def move(self):
+        self.fd(self.speed)
+
+#Collision detection (Wall, Boundry, Boundries, Divider, Collision)
+        #Main Wall
+        if self.xcor() > 290:
+            self.setx(290)
+            self.rt(60)
+        if self.xcor() < -290:
+            self.setx(-290)
+            self.rt(60)
+        if self.ycor() > 290:
+            self.sety(290)
+            self.rt(60)
+        if self.ycor() < -290:
+            self.sety(-290)
+            self.rt(60)
+        #Middle Divider
+        if self.xcor() < 25 and self.ycor() < 150 and \
+            self.xcor() > -25 and self.ycor() > -150:
+            self.rt(60)
+        #Top Left Divider
+        if self.xcor() < -150 and self.ycor() < 200 and \
+            self.xcor() > -200 and self.ycor() > 50:
+            self.rt(60)
+        #Bottom Left Divider
+        if self.xcor() < -150 and self.ycor() < -50 and \
+            self.xcor() > -200 and self.ycor() > -200:
+            self.rt(60)
+        #Top Right Divider
+        if self.xcor() < 200 and self.ycor() < 200 and \
+            self.xcor() > 150 and self.ycor() > 50:
+            self.lt(60)
+        #Bottom Right Divider
+        if self.xcor() < 200 and self.ycor() < -50 and \
+            self.xcor() > 150 and self.ycor() > -200:
+            self.rt(60)
+
+        #Tank colliding with tank
+    def collide(self, other):
+        if (self.xcor() >= (other.xcor() - 10)) and \
+        (self.xcor() <= (other.xcor() + 10)) and \
+        (self.ycor() <= (other.ycor() + 10)) and \
+        (self.ycor() >= (other.ycor() - 10)):
+            return True
+        else:
+            return False
+
+#Tank class and controls (Turning, Controls, Bluetank, enemytank, Setup)
+#Bluetank class and setup
+class Bluetank(Sprite):
+     def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.speed = 0
+        self.lives = 3
+
+     def turnblue_left(self):
+        self.lt(30)
+
+     def turnblue_right(self):
+        self.rt(30)
+
+     def bluespeed(self):
+         self.speed += 1
+       
+     def blueslow(self):
+         self.speed -= 1
+
+     def bluereset(self):
+         self.goto(200,0)
+
+     def blueaim(self):
+         self.setheading(self.towards(enemy))
+
+#enemytank class and setup
+class Enemy(Sprite):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.speed = 6
+        self.setheading(random.randint(0,360))
+
+    
+
+    def enemyaim(self):
+         self.setheading(self.towards(bluetank))
+
+#Missle Classes and setup
+#BlueMissile setup
+class BlueMissile(Sprite):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        Sprite.__init__(self, spriteshape, color, startx, starty, heading)
+        self.shapesize(stretch_wid = 0.3, stretch_len = 0.4, outline = None)
+        self.speed = 15
+        self.status = "ready"
+        self.goto(-1000, 1000)
+
+    def bluefire(self):
+        if self.status == "ready":
+            self.goto(bluetank.xcor(), bluetank.ycor())
+            self.setheading(bluetank.heading())
+            self.status = "firing"
+
+    def move (self):
+        if self.status == "ready":
+            self.goto(-1000,1000)
+        if self.status == "firing":
+            self.fd(self.speed)
+
+    #Boarder Check
+        if self.xcor() < -290 or self.xcor() > 290 or \
+        self.ycor() < -290 or self.ycor() > 290:
+            self.goto(-1000,1000)
+            self.status = "ready"
+    #Divider Checks
+        #Middle Divider
+        if self.xcor() < 25 and self.ycor() < 150 and \
+            self.xcor() > -25 and self.ycor() > -150:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Top Left Divider
+        if self.xcor() < -150 and self.ycor() < 200 and \
+            self.xcor() > -200 and self.ycor() > 50:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Bottom Left Divider
+        if self.xcor() < -150 and self.ycor() < -50 and \
+            self.xcor() > -200 and self.ycor() > -200:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Top Right Divider
+        if self.xcor() < 200 and self.ycor() < 200 and \
+            self.xcor() > 150 and self.ycor() > 50:
+            self.goto(-1000,1000)
+            self.status = "ready"
+        #Bottom Right Divider
+        if self.xcor() < 200 and self.ycor() < -50 and \
+            self.xcor() > 150 and self.ycor() > -200:
+            self.goto(-1000,1000)
+            self.status = "ready"
+       
+#Class for graphics (draw boarder, draw wall)
+class Game():
+    def __init__(self):
+        self.state = "playing"
+        self.pen = turtle.Turtle()
+        self.pen.hideturtle()
+       
+    def draw_boarder(self):
+        self.pen.speed(0)
+        self.pen.color("black")
+        self.pen.pensize(3)
+        self.pen.penup()
+        self.pen.goto(-300,300)
+        self.pen.pendown()
+        #Main Wall
+        for side in range(4):
+            self.pen.fd(600)
+            self.pen.rt(90)
+        self.pen.penup()
+        self.pen.ht()
+        #Top Left Divider
+        self.pen.goto(-200,200)
+        self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
+        for TLD in range(2):
+            self.pen.fd(50)
+            self.pen.rt(90)
+            self.pen.fd(150)
+            self.pen.rt(90)
+        self.pen.end_fill()
+        self.pen.penup()
+        self.pen.ht()
+        #Bottom Left Divider
+        self.pen.goto(-200,-200)
+        self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
+        for BLD in range(2):
+            self.pen.fd(50)
+            self.pen.lt(90)
+            self.pen.fd(150)
+            self.pen.lt(90)
+        self.pen.end_fill()
+        self.pen.penup()
+        self.pen.ht()
+        #Top Right Divider
+        self.pen.goto(150,200)
+        self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
+        for TRD in range(2):
+            self.pen.fd(50)
+            self.pen.rt(90)
+            self.pen.fd(150)
+            self.pen.rt(90)
+        self.pen.end_fill()
+        self.pen.penup()
+        self.pen.ht()
+        #Bottom Right Divider
+        self.pen.goto(150,-200)
+        self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
+        for BRD in range(2):
+            self.pen.fd(50)
+            self.pen.lt(90)
+            self.pen.fd(150)
+            self.pen.lt(90)
+        self.pen.end_fill()
+        self.pen.penup()
+        self.pen.ht()
+        #Middle Divider
+        self.pen.goto(-25,150)
+        self.pen.pendown()
+        self.pen.fillcolor('black')
+        self.pen.begin_fill()
+        for BRD in range(2):
+            self.pen.fd(50)
+            self.pen.rt(90)
+            self.pen.fd(300)
+            self.pen.rt(90)
+        self.pen.end_fill()
+        self.pen.penup()
+        self.pen.ht()
+
+#Class for the blue side of the scoreboard
+class BlueControl():
+    def __init__(self):
+        self.bluescore = 0
+        self.bluelives = 3
+        self.bluepen = turtle.Turtle()
+        self.state = "playing"
+
+        self.bluepen.color("black")
+        self.bluepen.hideturtle()
+        self.bluepen.pensize(3)
+        self.bluepen.penup()
+
+        self.lifepen = turtle.Turtle()
+        self.lifepen.color("black")
+        self.lifepen.hideturtle()
+        self.lifepen.pensize(3)
+        self.lifepen.penup()
+
+        self.bluepen.goto(300,425)
+        msg = "Blue Team Controls"
+        self.bluepen.pendown()
+        self.bluepen.write(msg, align = "right", font=("Arial", 16, "normal",))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300, 400)
+        self.bluepen.pendown()
+        msg = "Move = Arrow Keys"
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,375)
+        self.bluepen.pendown()
+        msg = "Fire = 0 or /"
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,350)
+        self.bluepen.pendown()
+        msg = "Reset = U"
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+        self.bluepen.goto(300,330)
+        self.bluepen.pendown()
+        msg = "Aim = ."
+        self.bluepen.write(msg, align = "right",font=("Arial", 16, "normal"))
+        self.bluepen.penup()
+
+    def show_bluestatus(self):
+        self.bluepen.undo()
+        msg = "%s - Blue Team Score" %(self.bluescore)
+        self.bluepen.penup()
+        self.bluepen.goto(110,310)
+        self.bluepen.write(msg, font=("Arial", 16, "normal"))
+
+    def lifesystem(self):
+        
+        self.life1 = turtle.Turtle()
+        self.life1.hideturtle()
+        self.life1.penup()
+        self.life1.shape("classic")
+        self.life1.color("blue")
+        self.life1.setheading(90)
+        self.life1.shapesize(stretch_len = 3, stretch_wid = 3)
+        self.life1.goto(-275, 350)
+        self.life1.showturtle()
+
+        self.life2 = turtle.Turtle()
+        self.life2.hideturtle()
+        self.life2.penup()
+        self.life2.shape("classic")
+        self.life2.color("blue")
+        self.life2.setheading(90)
+        self.life2.shapesize(stretch_len = 3, stretch_wid = 3)
+        self.life2.goto(-225, 350)
+        self.life2.showturtle()
+
+        self.life3 = turtle.Turtle()
+        self.life3.hideturtle()
+        self.life3.penup()
+        self.life3.shape("classic")
+        self.life3.color("blue")
+        self.life3.setheading(90)
+        self.life3.shapesize(stretch_len = 3, stretch_wid = 3)
+        self.life3.goto(-175, 350)
+        self.life3.showturtle()
+    
+
+    def removelife(self):
+        if self.bluelives == 2:
+            self.life1.hideturtle()
+        if self.bluelives == 1:
+            self.life2.hideturtle()
+        if self.bluelives == 0:
+            self.life3.hideturtle()
+
+    def gameover(self):
+        self.endgame = turtle.Turtle()
+        self.endgame.hideturtle()
+        self.endgame.goto(-900,900)
+        self.endgame.fillcolor('white')
+        self.endgame.begin_fill()
+        for i in range(4):
+            self.endgame.fd(1800)
+            self.endgame.rt(90)
+        self.endgame.end_fill()
+            
+
+
+#Make classes into objects
+game = Game()
+blueboard = BlueControl()
+#Draw the games border
+game.draw_boarder()
+blueboard.show_bluestatus()
+blueboard.lifesystem()
+blueboard.removelife()
+
+#Create all Sprites
+#Tanks
+bluetank = Bluetank("classic", "blue" ,200, 0, 180)
+enemies = []
+for i in range(15):
+    x = random.randint(-275,0)
+    y = random.randint(-275,275)
+    enemies.append(Enemy("circle", "red",x, y, 0))
+#Missiles
+bluemissile = BlueMissile("arrow", "blue",0 , 0, 0)
+
+#Controls
+#Bluetank
+turtle.onkey(bluetank.turnblue_left, 'Left')
+turtle.onkey(bluetank.turnblue_right, 'Right')
+turtle.onkey(bluetank.bluespeed, 'Up')
+turtle.onkey(bluetank.blueslow, 'Down')
+turtle.onkey(bluemissile.bluefire, '0')
+turtle.onkey(bluemissile.bluefire, '/')
+turtle.onkey(bluetank.bluereset, 'u')
+turtle.onkey(bluetank.blueaim, '.')
+turtle.listen()
+
+#Main game loop
+while True:
+    turtle.update()
+    time.sleep(0.05)
+    if blueboard.bluelives > 0:
+        blueboard.bluescore += 1
+    blueboard.show_bluestatus()
+    bluetank.move()
+    bluemissile.move()
+    
+    for enemy in enemies:
+        enemy.move()
+        #Check for collisions between tank and enemy
+        if bluetank.collide(enemy):
+            x = random.randint(-275,275)
+            y = random.randint(-275,275)
+            enemy.goto(x,y)
+            bluetank.goto(200,0)
+            blueboard.bluelives -= 1
+            blueboard.removelife()           
+        #Check for hit
+        if bluemissile.collide(enemy):
+            enemy.goto(-200,0)
+            bluemissile.status = "ready"
+            #Increase Score
+            blueboard.bluescore +=10
+            blueboard.show_bluestatus()
+
+    if blueboard.bluelives == 0:
+        blueboard.gameover()
+
+    
