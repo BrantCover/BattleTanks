@@ -1,0 +1,109 @@
+import turtle
+import random
+import time
+
+#Base game settings
+turtle.fd(0)
+turtle.speed(0)
+turtle.bgcolor("white")
+turtle.ht()
+turtle.setundobuffer(1)
+turtle.tracer(1)
+turtle.setup(900,900)
+
+#Class to set up all sprites used in the game
+class Sprite(turtle.Turtle):
+    def __init__(self, spriteshape, color, startx, starty, heading):
+        turtle.Turtle.__init__(self, shape = spriteshape)
+        self.speed(0)
+        self.penup()
+        self.color(color)
+        self.fd(0)
+        self.goto(startx, starty)
+        self.setheading(heading)
+        self.speed = 1
+
+    def move(self):
+        self.fd(self.speed)
+
+
+class Menu():
+    def __init__(self): 
+        self.menupen = turtle.Turtle()
+        self.menupen.hideturtle()
+        self.menupen.color("black")
+        self.menupen.pensize(3)
+        self.menupen.penup()
+
+    def draw_menu(self):
+        self.menupen.goto(0,300)
+        msg = "Battle Tanks"
+        self.menupen.pendown()
+        self.menupen.write(msg, align = "center", font =("Arial", 60, "bold"))
+        self.menupen.penup()
+
+        self.menupen.goto(0,150)
+        msg = "Select Mode"
+        self.menupen.pendown()
+        self.menupen.write(msg, align = "center", font =("Arial", 24, "bold"))
+        self.menupen.penup()
+
+        self.Redshow = turtle.Turtle()
+        self.Redshow.hideturtle()
+        self.Redshow.penup()
+        self.Redshow.shapesize(stretch_wid = 10, stretch_len = 10)
+        self.Redshow.setheading(45)
+        self.Redshow.color("red")
+        self.Redshow.goto(-225, 225)
+        self.Redshow.showturtle()
+        
+        self.blueshow = turtle.Turtle()
+        self.blueshow.hideturtle()
+        self.blueshow.penup()
+        self.blueshow.shapesize(stretch_wid = 10, stretch_len = 10)
+        self.blueshow.setheading(135)
+        self.blueshow.color("blue")
+        self.blueshow.goto(225, 225)
+        self.blueshow.showturtle()
+
+survival = turtle.Turtle()
+survival.hideturtle()
+survival.penup()
+survival.goto(-300, 0)
+survival.pendown()
+for i in range(2):
+    survival.forward(110)
+    survival.left(90)
+    survival.forward(40)
+    survival.left(90)
+survival.write("Survival", font=("Arial", 24, "normal"))
+
+versus = turtle.Turtle()
+versus.hideturtle()
+versus.penup()
+versus.goto(200, 0)
+versus.pendown()
+for i in range(2):
+    versus.forward(110)
+    versus.left(90)
+    versus.forward(40)
+    versus.left(90)
+versus.write(" Versus", font=("Arial", 24, "normal"))
+
+def ModeSelectClick(x,y):
+    if x > 190 and x < 300  and y > 0 and y < 40:
+        modeturtle
+        #AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    if x > -300 and x < -190 and y > 0 and y < 40:
+        print("You Have Selected Survival") 
+turtle.onscreenclick(ModeSelectClick, 1)
+turtle.listen()
+
+
+
+        
+
+menu = Menu()
+menu.draw_menu()
+
+turtle.done()
