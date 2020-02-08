@@ -477,6 +477,3 @@ while True:
         #Increase Score
         redboard.redscore += 1
         redboard.show_redstatus()
-
-    for particle in particles:
-        particle.move()
