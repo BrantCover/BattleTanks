@@ -185,7 +185,7 @@ class Boarders():
 class BlueControl():
     def __init__(self):
         self.bluescore = 0
-        self.bluelives = 200
+        self.bluelives = 3
         self.currentlevel = 1
 
         self.bluepen = turtle.Turtle()
