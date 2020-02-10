@@ -9,7 +9,8 @@ turtle.bgcolor("white")
 turtle.ht()
 turtle.setundobuffer(1)
 turtle.tracer(1)
-turtle.setup(700,900)
+turtle.setup(700,475)
+
 #Create the menu graphics
 class Menu():
     #make a turtle to draw everything
@@ -21,16 +22,28 @@ class Menu():
         self.menupen.penup()
     #Title
     def draw_menu(self):
-        self.menupen.goto(0,300)
+        self.menupen.goto(0,130)
         msg = "Battle Tanks"
         self.menupen.pendown()
         self.menupen.write(msg, align = "center", font =("Arial", 60, "bold"))
         self.menupen.penup()
     #subtitle
-        self.menupen.goto(0,150)
+        self.menupen.goto(0,0)
         msg = "Select Mode"
         self.menupen.pendown()
         self.menupen.write(msg, align = "center", font =("Arial", 24, "bold"))
+        self.menupen.penup()
+    #credits
+        self.menupen.goto(0,-180)
+        msg = "Created By: Brant Coverstone"
+        self.menupen.pendown()
+        self.menupen.write(msg, align = "center", font =("Arial", 16, "normal"))
+        self.menupen.penup()
+    #link to code
+        self.menupen.goto(0,-215)
+        msg = "Code to all modes found at: github.com/BrantCover/ShabbyProjects"
+        self.menupen.pendown()
+        self.menupen.write(msg, align = "center", font =("Arial", 16, "normal"))
         self.menupen.penup()
     #Big graphics of tanks
         self.Redshow = turtle.Turtle()
@@ -39,7 +52,7 @@ class Menu():
         self.Redshow.shapesize(stretch_wid = 10, stretch_len = 10)
         self.Redshow.setheading(45)
         self.Redshow.color("red")
-        self.Redshow.goto(-225, 225)
+        self.Redshow.goto(-225, 75)
         self.Redshow.showturtle()
         
         self.blueshow = turtle.Turtle()
@@ -48,14 +61,14 @@ class Menu():
         self.blueshow.shapesize(stretch_wid = 10, stretch_len = 10)
         self.blueshow.setheading(135)
         self.blueshow.color("blue")
-        self.blueshow.goto(225, 225)
+        self.blueshow.goto(225, 75)
         self.blueshow.showturtle()
 
 #Make a turtle to create the the Survival button
 survival = turtle.Turtle()
 survival.hideturtle()
 survival.penup()
-survival.goto(-300, 0)
+survival.goto(-300, -150)
 survival.pendown()
 for i in range(2):
     survival.forward(110)
@@ -67,25 +80,29 @@ survival.write("Survival", font=("Arial", 24, "normal"))
 versus = turtle.Turtle()
 versus.hideturtle()
 versus.penup()
-versus.goto(200, 0)
+versus.goto(190, -110)
 versus.pendown()
 for i in range(2):
     versus.forward(110)
-    versus.left(90)
+    versus.right(90)
     versus.forward(40)
-    versus.left(90)
+    versus.right(90)
+versus.goto(190, -150)
 versus.write(" Versus", font=("Arial", 24, "normal"))
 
+def btnclick(x,y):
+    print(x,y)
 #Make the buttons do something when clicked
 def ModeSelectClick(x,y):
-    if x > 190 and x < 300  and y > 0 and y < 40:
+    if x > 190 and x < 300  and y > -150 and y < -110:
         print("You Have Selected Versus")
         #make sure that this is in the same folder as the menu, otherwise nothing happens
         os.system('python BattleTanksVersus.py')
         
-    if x > -300 and x < -190 and y > 0 and y < 40:
+    if x > -310 and x < -190 and y > -150 and y < -110:
         print("You Have Selected Survival")
-        print("This mode does not exist yet")
+        os.system('python BattleTanksSurvival.py')
+#turtle.onscreenclick(btnclick, 1)
 turtle.onscreenclick(ModeSelectClick, 1)
 turtle.listen()
 
